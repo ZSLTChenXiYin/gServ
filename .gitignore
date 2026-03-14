@@ -1,0 +1,14 @@
+# windows二进制文件
+*.exe
+
+# 日志文件
+*.log
+
+# 数据库文件
+*.db
+
+# 配置文件
+gserv.conf.yaml
+
+# 测试文件
+tests/
