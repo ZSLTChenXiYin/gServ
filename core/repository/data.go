@@ -1,6 +1,9 @@
 package repository
 
-import "fmt"
+import (
+	"fmt"
+	"gServ/pkg/model"
+)
 
 const (
 	TABLENAME_GAME                = "games"
@@ -24,5 +27,11 @@ func ExistsData(tablename string, id uint) (bool, error) {
 
 	var count int64
 	err := database.Table(tablename).Where("id = ?", id).Count(&count).Error
+	return count > 0, err
+}
+
+func ExistsPlayerDataArchive(game_id uint, player_id uint) (bool, error) {
+	var count int64
+	err := database.Model(&model.PlayerDataArchive{}).Where("game_id = ? AND player_id = ?", game_id, player_id).Count(&count).Error
 	return count > 0, err
 }

@@ -57,6 +57,10 @@ type get_Api_Rooms_Response struct {
 }
 
 // JSON数据操作响应结构
+type get_Api_Data_Exists_Response struct {
+	Exists bool `json:"exists"`
+}
+
 type post_Api_Data_Response struct {
 	ID uint `json:"id"`
 }
@@ -66,6 +70,6 @@ type get_Api_Data_Response struct {
 	GameID    uint           `json:"game_id"`
 	PlayerID  uint           `json:"player_id"`
 	Data      datatypes.JSON `json:"data"`
-	CreatedAt string         `json:"created_at"`
-	UpdatedAt string         `json:"updated_at"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }

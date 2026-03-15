@@ -19,22 +19,6 @@ func ScanPlayerExpiredAt(id uint) (*time.Time, error) {
 	return player_expired_at, err
 }
 
-func FirstPlayerDataArchiveByGameIDAndPlayerID(game_id uint, player_id uint) (*model.PlayerDataArchive, error) {
-	player_data_archive := &model.PlayerDataArchive{}
-	err := database.Preload("Player").
-		Where("game_id = ? AND player_id = ?", game_id, player_id).
-		First(player_data_archive).Error
-	return player_data_archive, err
-}
-
-func CreatePlayerDataArchive(archive *model.PlayerDataArchive) error {
-	return database.Create(archive).Error
-}
-
-func UpdatePlayerDataArchive(archive *model.PlayerDataArchive) error {
-	return database.Save(archive).Error
-}
-
 func CreatePlayer(email, passwordHash, nickname string) (*model.Player, error) {
 	player := &model.Player{
 		Email:        email,

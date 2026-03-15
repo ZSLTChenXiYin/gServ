@@ -49,18 +49,16 @@ type post_Api_Room_Request struct {
 
 // JSON数据操作请求结构
 type post_Api_Data_Request struct {
-	GameID   uint           `json:"game_id" binding:"required"`
-	PlayerID uint           `json:"player_id" binding:"required"`
-	Data     datatypes.JSON `json:"data" binding:"required"`
-}
-
-type put_Api_Data_Request struct {
-	Data datatypes.JSON `json:"data" binding:"required"`
+	GameID uint           `json:"game_id" validate:"required"`
+	Data   datatypes.JSON `json:"data" validate:"required"`
 }
 
 type get_Api_Data_Request struct {
-	GameID   uint `form:"game_id" binding:"required"`
-	PlayerID uint `form:"player_id" binding:"required"`
+	GameID uint `form:"game_id" validate:"required"`
+}
+
+type put_Api_Data_Request struct {
+	Data datatypes.JSON `json:"data" validate:"required"`
 }
 
 type delete_Api_Data_Request struct {

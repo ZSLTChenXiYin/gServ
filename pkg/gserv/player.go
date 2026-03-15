@@ -8,9 +8,8 @@ type AuthPlayer struct {
 }
 
 type Player struct {
-	Email    string         // 玩家邮箱
-	Nickname string         // 玩家昵称
-	Data     map[string]any // 玩家在线数据
+	Email    string // 玩家邮箱
+	Nickname string // 玩家昵称
 
 	CurrentRoomID uint64
 }

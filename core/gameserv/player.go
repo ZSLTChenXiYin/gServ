@@ -1,7 +1,6 @@
 package gameserv
 
 import (
-	"encoding/json"
 	"gServ/core/repository"
 	"gServ/pkg/gserv"
 )
@@ -11,13 +10,7 @@ func PlayerOnline(game_id uint, player_id uint) error {
 		return nil
 	}
 
-	player_data_archive, err := repository.FirstPlayerDataArchiveByGameIDAndPlayerID(game_id, player_id)
-	if err != nil {
-		return err
-	}
-
-	archive_data := map[string]any{}
-	err = json.Unmarshal(player_data_archive.Data, &archive_data)
+	player, err := repository.FirstPlayer(player_id)
 	if err != nil {
 		return err
 	}
@@ -27,9 +20,8 @@ func PlayerOnline(game_id uint, player_id uint) error {
 	}
 
 	online_players[game_id][player_id] = &gserv.Player{
-		Email:    player_data_archive.Player.Email,
-		Nickname: player_data_archive.Player.Nickname,
-		Data:     archive_data,
+		Email:    player.Email,
+		Nickname: player.Nickname,
 	}
 
 	return nil

@@ -132,6 +132,11 @@ func put_Api_Room_ExilePlayer(c *gin.Context) {
 		return
 	}
 
+	if auth_player.ID == uint(player_id_uint) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "不能放逐自己"})
+		return
+	}
+
 	err = gameserv.LeaveRoom(uint(game_id_uint), room_id_uint, uint(player_id_uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "玩家放逐失败"})

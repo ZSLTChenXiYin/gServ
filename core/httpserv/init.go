@@ -116,16 +116,16 @@ func initRouter(router *gin.Engine) {
 		data_router := api_router.Group("/data")
 		data_router.Use(middleware.PlayerAuth())
 		{
-			// 创建或更新JSON数据
+			// 判断存档是否存在，不存在开始游戏前，可以调用创建存档接口进行初始化
+			data_router.GET("/:game_id/exists", get_Api_Data_Exists)
+			// 创建JSON数据
 			data_router.POST("/", post_Api_Data)
 			// 获取JSON数据
 			data_router.GET("/", get_Api_Data)
 			// 更新JSON数据
-			data_router.PUT("/:game_id/:player_id", put_Api_Data)
+			data_router.PUT("/:game_id", put_Api_Data)
 			// 删除JSON数据
 			data_router.DELETE("/", delete_Api_Data)
-			// 批量获取游戏下的所有玩家数据
-			data_router.GET("/game/:game_id", get_Api_Game_Data)
 		}
 	}
 
