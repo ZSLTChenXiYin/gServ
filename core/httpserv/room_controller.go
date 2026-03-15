@@ -89,6 +89,58 @@ func get_Api_Room(c *gin.Context) {
 	})
 }
 
+func put_Api_Room_ExilePlayer(c *gin.Context) {
+	auth_player := middleware.GetAuthPlayerFromGinContext(c)
+	if auth_player.ID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "鉴权失败"})
+		return
+	}
+
+	game_id := c.Param("game_id")
+	room_id := c.Param("room_id")
+	player_id := c.Param("player_id")
+	if game_id == "" || room_id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "游戏ID和房间ID不能为空"})
+		return
+	}
+
+	var game_id_uint, room_id_uint, player_id_uint uint64
+	game_id_uint, err := strconv.ParseUint(game_id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "游戏ID格式错误"})
+		return
+	}
+	room_id_uint, err = strconv.ParseUint(room_id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "房间ID格式错误"})
+		return
+	}
+	player_id_uint, err = strconv.ParseUint(player_id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "玩家ID格式错误"})
+		return
+	}
+
+	room := gameserv.GetRoom(uint(game_id_uint), room_id_uint)
+	if room == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "房间不存在"})
+		return
+	}
+
+	if room.GetHomeownerID() != auth_player.ID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权限操作"})
+		return
+	}
+
+	err = gameserv.LeaveRoom(uint(game_id_uint), room_id_uint, uint(player_id_uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "玩家放逐失败"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "玩家放逐成功"})
+}
+
 // 锁定房间
 func put_Api_Room_Lock(c *gin.Context) {
 	auth_player := middleware.GetAuthPlayerFromGinContext(c)

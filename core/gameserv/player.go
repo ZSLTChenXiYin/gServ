@@ -64,7 +64,7 @@ func BanPlayer(player_id uint) error {
 	}
 
 	for _, ban_player := range ban_players {
-		game_rooms[ban_player.GameID][ban_player.RoomID].PlayerLeave(player_id)
+		LeaveRoom(ban_player.GameID, ban_player.RoomID, player_id)
 		PlayerOffline(ban_player.GameID, player_id)
 	}
 

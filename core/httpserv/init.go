@@ -64,6 +64,8 @@ func initRouter(router *gin.Engine) {
 			room_router.POST("/", post_Api_Room)
 			// 获取房间信息，返回房间ID、房间名、房间最大人数、房间当前人数、房间其他玩家信息列表和房间创建时间
 			room_router.GET("/:game_id/:room_id", get_Api_Room)
+			// 放逐玩家
+			room_router.PUT("/:game_id/:room_id/:player_id", put_Api_Room_ExilePlayer)
 			// 锁定房间
 			room_router.PUT("/:game_id/:room_id/lock", put_Api_Room_Lock)
 			// 解锁房间
