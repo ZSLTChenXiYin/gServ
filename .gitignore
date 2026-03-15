@@ -12,3 +12,9 @@ gserv.conf.yaml
 
 # 测试文件
 tests/
+
+# 构建目录
+build/
+
+# 辅助工具
+tools/
