@@ -1,6 +1,7 @@
 package httpserv
 
 import (
+	"gServ/core/config"
 	"gServ/core/repository"
 	"gServ/core/validate"
 	"gServ/pkg/hash"
@@ -105,6 +106,7 @@ func post_Api_Player_Login(c *gin.Context) {
 	c.JSON(http.StatusOK, &post_Api_Player_Login_Response{
 		Token:    token,
 		Nickname: player.Nickname,
+		TCPPort:  config.GetConfig().Server.TCPPort,
 	})
 }
 

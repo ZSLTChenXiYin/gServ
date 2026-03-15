@@ -24,6 +24,7 @@ type post_Api_Player_Register_Response struct {
 type post_Api_Player_Login_Response struct {
 	Token    string `json:"token"`
 	Nickname string `json:"nickname"`
+	TCPPort  uint   `json:"tcp_port"`
 }
 
 type get_Api_Player_Response struct {
