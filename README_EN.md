@@ -22,8 +22,8 @@ gServ is a universal game server framework designed to provide stable and reliab
 * **Message Forwarding**: TCP long-connection support for real-time message forwarding
 * **Verification System**: Email verification codes, JWT authentication
 
-#### 浊水楼台 Free Route
-* **成都**：chengdu-gserv.zslt-official.com
+#### 浊水楼台 Free Services
+* **中国-成都**：chengdu-gserv.zslt-official.com
 
 ## Features ##
 #### Player System
