@@ -1,0 +1,33 @@
+# 服务端配置
+server:
+  # 模式 可选 "prod"/"dev"
+  mode: "dev"
+  # HTTP 服务端口
+  http_port: 8080
+  # TCP 服务端口
+  tcp_port: 9090
+  # 日志文件输出位置
+  log: "gserv.log"
+  # JWT 密钥
+  jwt: "xxxxxxxxxxxxxxxxxxxx"
+  # 管理员鉴权码
+  auth_code: "xxxxxxxxxxxxxxxxxxxx"
+  # 邮件服务
+  email:
+    # 邮件服务主机
+    host: "smtp.qq.com"
+    # 邮件服务端口
+    port: 465
+    # 邮件服务邮箱
+    email: "xxxxxxxxxxxx@qq.com"
+    # 邮件服务密码
+    password: "xxxxxxxxxxxxxxxxxxxx"
+
+# 数据库配置
+database:
+  # 数据库驱动 可选 "sqlite"/"mysql"
+  driver: "sqlite"
+  # 数据库连接字符串
+  # sqlite "gserv.db"
+  # mysql "user:password@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "gserv.db"
