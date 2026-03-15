@@ -111,13 +111,13 @@ go run main.go
 #### 服务器配置
 ```yaml
 server:
-  mode: "dev"           # 运行模式: "prod"/"dev"
-  http_port: 8080       # HTTP服务端口
-  tcp_port: 9090        # TCP服务端口
-  log: "gserv.log"      # 日志文件路径
-  jwt: "your-jwt-secret" # JWT密钥
-  auth_code: "admin-auth-code" # 管理员鉴权码
-  email:                # 邮件服务配置
+  mode: "dev"                          # 运行模式: "prod"/"dev"
+  http_port: 8080                      # HTTP服务端口
+  tcp_port: 9090                       # TCP服务端口
+  log: "gserv.log"                     # 日志文件路径
+  jwt: "your-jwt-secret"               # JWT密钥
+  auth_code: "admin-auth-code"         # 管理员鉴权码
+  email:                               # 邮件服务配置
     host: "smtp.qq.com"
     port: 465
     email: "your-email@qq.com"
@@ -157,7 +157,7 @@ vim docker.gserv.conf.yaml
 # 2. 启动服务
 docker compose up -d
 ```
-[Docker 部署参考文档](README_DOCKER.md)
+- [Docker 部署参考文档](README_DOCKER.md)
 
 ## 开发说明 ##
 #### 代码规范

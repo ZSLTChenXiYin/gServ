@@ -111,13 +111,13 @@ After service starts:
 #### Server Configuration
 ```yaml
 server:
-  mode: "dev"           # Run mode: "prod"/"dev"
-  http_port: 8080       # HTTP service port
-  tcp_port: 9090        # TCP service port
-  log: "gserv.log"      # Log file path
-  jwt: "your-jwt-secret" # JWT secret key
-  auth_code: "admin-auth-code" # Administrator authentication code
-  email:                # Email service configuration
+  mode: "dev"                          # Run mode: "prod"/"dev"
+  http_port: 8080                      # HTTP service port
+  tcp_port: 9090                       # TCP service port
+  log: "gserv.log"                     # Log file path
+  jwt: "your-jwt-secret"               # JWT secret key
+  auth_code: "admin-auth-code"         # Administrator authentication code
+  email:                               # Email service configuration
     host: "smtp.qq.com"
     port: 465
     email: "your-email@qq.com"
@@ -157,6 +157,7 @@ vim docker.gserv.conf.yaml
 # 2. Start service
 docker compose up -d
 ```
+- [Docker Deployment Reference Document](README_DOCKER.md)
 
 ## Development Guide ##
 #### Code Standards
