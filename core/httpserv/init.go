@@ -51,14 +51,23 @@ func initRouter(router *gin.Engine) {
 		// 健康检查
 		api_router.GET("/health", get_Api_Health)
 
-		// 获取游戏列表
-		api_router.GET("/games", get_Api_Games)
+		games_router := api_router.Group("/games")
+		games_router.Use(middleware.PlayerAuth())
+		{
+			// 获取游戏列表
+			games_router.GET("/", get_Api_Games)
+		}
 
-		// 获取房间列表，返回房间ID、房间名、房间最大人数、房间当前人数的列表和房间创建时间
-		api_router.GET("/rooms", get_Api_Rooms)
+		rooms_router := api_router.Group("/rooms")
+		rooms_router.Use(middleware.PlayerAuth())
+		{
+			// 获取房间列表，返回房间ID、房间名、房间最大人数、房间当前人数的列表和房间创建时间
+			rooms_router.GET("/", get_Api_Rooms)
+		}
 
 		// 房间相关
 		room_router := api_router.Group("/room")
+		room_router.Use(middleware.PlayerAuth())
 		{
 			// 创建房间，创建后不会主动加入房间，还需要再调用一次TCP服务建立连接后加入房间
 			room_router.POST("/", post_Api_Room)
@@ -88,12 +97,12 @@ func initRouter(router *gin.Engine) {
 			player_router.POST("/register", post_Api_Player_Register)
 			// 玩家登录，输入玩家ID和密码，返回token
 			player_router.POST("/login", post_Api_Player_Login)
-			// 获取玩家信息，返回玩家ID、昵称、邮箱、当前所在房间和账号创建时间
-			player_router.GET("/:id", get_Api_Player)
 
 			// 玩家权限验证，所有和ID相关的操作首先要把token中的ID和URL中的ID进行对比，如果一致则继续，不一致则返回错误
 			player_router.Use(middleware.PlayerAuth())
 			{
+				// 获取玩家信息，返回玩家ID、昵称、邮箱、当前所在房间和账号创建时间
+				player_router.GET("/:id", get_Api_Player)
 				// 更新玩家信息，目前仅需支持修改昵称和邮箱，修改邮箱需要附带发送到旧邮箱的验证码
 				player_router.PUT("/", put_Api_Player)
 				// 修改密码，需要输入旧密码和新密码还有发送到邮箱的验证码
