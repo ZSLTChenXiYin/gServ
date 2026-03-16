@@ -34,6 +34,9 @@ COPY --from=builder /app/gServ /app/gServ
 # 复制配置文件模板
 COPY docker.gserv.conf.yaml /app/gserv.conf.yaml
 
+# 复制资源文件夹
+COPY res /app/res
+
 # 设置环境变量
 ENV TZ=Asia/Shanghai
 
