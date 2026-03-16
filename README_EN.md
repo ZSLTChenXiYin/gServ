@@ -121,10 +121,11 @@ server:
   jwt: "your-jwt-secret"               # JWT secret key
   auth_code: "admin-auth-code"         # Administrator authentication code
   email:                               # Email service configuration
-    host: "smtp.qq.com"
-    port: 465
-    email: "your-email@qq.com"
-    password: "your-email-password"
+     template: "res/captcha/email_captcha.html"
+     host: "smtp.qq.com"
+     port: 465
+     email: "your-email@qq.com"
+     password: "your-email-password"
 ```
 
 #### Database Configuration

@@ -121,10 +121,11 @@ server:
   jwt: "your-jwt-secret"               # JWT密钥
   auth_code: "admin-auth-code"         # 管理员鉴权码
   email:                               # 邮件服务配置
-    host: "smtp.qq.com"
-    port: 465
-    email: "your-email@qq.com"
-    password: "your-email-password"
+     template: "res/captcha/email_captcha.html"
+     host: "smtp.qq.com"
+     port: 465
+     email: "your-email@qq.com"
+     password: "your-email-password"
 ```
 
 #### 数据库配置
