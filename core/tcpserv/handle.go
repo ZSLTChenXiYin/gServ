@@ -7,6 +7,7 @@ import (
 	"gServ/core/log"
 	"gServ/core/repository"
 	"gServ/pkg/jwt"
+	"io"
 	"net"
 
 	"github.com/ZSLTChenXiYin/custproto"
@@ -30,7 +31,7 @@ func HandleConnection(conn net.Conn) {
 
 	// 处理TCP连接，确认玩家登录
 	login_bytes_slice := make([]byte, 2)
-	_, err := conn.Read(login_bytes_slice)
+	_, err := io.ReadFull(conn, login_bytes_slice)
 	if err != nil {
 		log.StdErrorf("TCP服务处理玩家%s首次登录请求读取失败: %v", conn.RemoteAddr().String(), err)
 		return
@@ -146,7 +147,7 @@ func HandleConnection(conn net.Conn) {
 
 	for {
 		bytes_slice := make([]byte, 2)
-		_, err := conn.Read(bytes_slice)
+		_, err := io.ReadFull(conn, bytes_slice)
 		if err != nil {
 			log.StdErrorf("TCP服务处理玩家%s请求失败: %v", conn.RemoteAddr().String(), err)
 			return
@@ -219,18 +220,7 @@ func HandleConnection(conn net.Conn) {
 			}
 
 			// 玩家登出后在服务器下线
-			err = gameserv.PlayerOffline(uint(req.GameID), auth_player.ID)
-			if err != nil {
-				log.StdErrorf("TCP服务处理玩家%s登出请求玩家下线失败: %v", conn.RemoteAddr().String(), err)
-				err = handleProtocol(conn, NewGSERVProtocolUniversalResponseError(
-					GSERV_PROTOCOL_AUTH_PLAYER_LOGOUT_RESPONSE_FAILURE,
-					err.Error(),
-				))
-				if err != nil {
-					log.StdErrorf("TCP服务处理玩家%s登出请求玩家下线响应失败: %v", conn.RemoteAddr().String(), err)
-				}
-				return
-			}
+			gameserv.PlayerOffline(uint(req.GameID), auth_player.ID)
 
 			// 玩家登出返回成功
 			err = handleProtocol(conn, NewGSERVProtocolAuthPlayerLogoutResponse(
@@ -286,8 +276,8 @@ func HandleConnection(conn net.Conn) {
 			}
 
 			// 查询玩家是否在房间中，在房间中就调用离开房间
-			if player.CurrentRoomID != 0 {
-				err = gameserv.LeaveRoom(uint(req.GameID), player.CurrentRoomID, auth_player.ID)
+			if player.GetCurrentRoomID() != 0 {
+				err = gameserv.LeaveRoom(uint(req.GameID), player.GetCurrentRoomID(), auth_player.ID)
 				if err != nil {
 					err = handleProtocol(conn, NewGSERVProtocolUniversalResponseError(
 						GSERV_PROTOCOL_JOIN_ROOM_RESPONSE_FAILURE,
@@ -362,7 +352,7 @@ func HandleConnection(conn net.Conn) {
 			}
 
 			// 检查玩家是否在房间中
-			if player.CurrentRoomID != req.RoomID {
+			if player.GetCurrentRoomID() != req.RoomID {
 				err = handleProtocol(conn, NewGSERVProtocolUniversalResponseError(
 					GSERV_PROTOCOL_ROOM_BROADCAST_DATA_RESPONSE_FAILURE,
 					"玩家不在房间内",
@@ -428,7 +418,7 @@ func HandleConnection(conn net.Conn) {
 			}
 
 			// 检查发送者是否在房间中
-			if sender.CurrentRoomID != req.RoomID {
+			if sender.GetCurrentRoomID() != req.RoomID {
 				err = handleProtocol(conn, NewGSERVProtocolUniversalResponseError(
 					GSERV_PROTOCOL_ROOM_BROADCAST_DATA_RESPONSE_FAILURE,
 					"玩家不在房间内",
@@ -440,8 +430,8 @@ func HandleConnection(conn net.Conn) {
 			}
 
 			// 检查目标玩家是否在房间中
-			targetPlayer := gameserv.GetOnlinePlayer(uint(req.GameID), uint(req.PlayerID))
-			if targetPlayer == nil || targetPlayer.CurrentRoomID != req.RoomID {
+			target_player := gameserv.GetOnlinePlayer(uint(req.GameID), uint(req.PlayerID))
+			if target_player == nil || target_player.GetCurrentRoomID() != req.RoomID {
 				err = handleProtocol(conn, NewGSERVProtocolUniversalResponseError(
 					GSERV_PROTOCOL_ROOM_BROADCAST_DATA_RESPONSE_FAILURE,
 					"目标玩家不在房间内",
@@ -507,7 +497,7 @@ func HandleConnection(conn net.Conn) {
 			}
 
 			// 检查发送者是否在房间中
-			if sender.CurrentRoomID != req.RoomID {
+			if sender.GetCurrentRoomID() != req.RoomID {
 				err = handleProtocol(conn, NewGSERVProtocolUniversalResponseError(
 					GSERV_PROTOCOL_ROOM_BROADCAST_DATA_RESPONSE_FAILURE,
 					"玩家不在房间内",

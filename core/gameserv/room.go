@@ -17,18 +17,20 @@ func CreateRoom(name string, game_id uint, homeowner_id uint, max_player uint) (
 		return 0, errors.New("room already exists")
 	}
 
-	if online_players[game_id][homeowner_id].CurrentRoomID != 0 {
+	online_player_any, ok := online_players[game_id].Load(homeowner_id)
+	if !ok {
+		return 0, errors.New("player not exists")
+	}
+	game_player := online_player_any.(*gserv.Player)
+	if game_player.GetCurrentRoomID() != 0 {
 		return 0, errors.New("player already in room")
 	}
 
 	// 创建房间
-	room := gserv.NewRoom(name, game_id, room_id, homeowner_id, max_player)
+	room := gserv.NewRoom(name, game_id, room_id, max_player)
 
 	// 添加房间
 	game_rooms[game_id][room_id] = room
-
-	// 修改玩家当前房间位置
-	online_players[game_id][homeowner_id].CurrentRoomID = room_id
 
 	return room_id, nil
 }
@@ -46,7 +48,12 @@ func JoinRoom(game_id uint, room_id uint64, player_id uint) error {
 		return errors.New("room not exists")
 	}
 
-	if online_players[game_id][player_id].CurrentRoomID != 0 {
+	online_player_any, ok := online_players[game_id].Load(player_id)
+	if !ok {
+		return errors.New("player not exists")
+	}
+	game_player := online_player_any.(*gserv.Player)
+	if game_player.GetCurrentRoomID() != 0 {
 		return errors.New("player already in room")
 	}
 
@@ -57,7 +64,7 @@ func JoinRoom(game_id uint, room_id uint64, player_id uint) error {
 	}
 
 	// 修改玩家当前房间位置
-	online_players[game_id][player_id].CurrentRoomID = room_id
+	game_player.SetCurrentRoomID(room_id)
 
 	return nil
 }
@@ -77,8 +84,14 @@ func LeaveRoom(game_id uint, room_id uint64, player_id uint) error {
 		return err
 	}
 
+	online_player_any, ok := online_players[game_id].Load(player_id)
+	if !ok {
+		return errors.New("player not exists")
+	}
+	game_player := online_player_any.(*gserv.Player)
+
 	// 删除玩家当前房间位置
-	online_players[game_id][player_id].CurrentRoomID = 0
+	game_player.SetCurrentRoomID(0)
 
 	// 如果房间人数为0，则删除房间
 	if game_rooms[game_id][room_id].GetPlayerCount() == 0 {
@@ -166,6 +179,8 @@ func CleanRooms() {
 		for room_id, room := range rooms {
 			if room.GetPlayerCount() == 0 {
 				if time.Since(room.GetUsedAt()) > time.Minute*5 {
+					// 关闭房间
+					game_rooms[game_id][room_id].RoomClose()
 					// 删除房间
 					delete(game_rooms[game_id], room_id)
 				}

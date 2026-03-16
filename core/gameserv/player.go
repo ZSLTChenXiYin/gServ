@@ -6,8 +6,12 @@ import (
 )
 
 func PlayerOnline(game_id uint, player_id uint) error {
-	if online_players[game_id][player_id] != nil {
-		return nil
+	player_any, ok := online_players[game_id].Load(player_id)
+	if ok {
+		game_player := player_any.(*gserv.Player)
+		if game_player != nil {
+			return nil
+		}
 	}
 
 	player, err := repository.FirstPlayer(player_id)
@@ -15,25 +19,24 @@ func PlayerOnline(game_id uint, player_id uint) error {
 		return err
 	}
 
-	if online_players[game_id][player_id] != nil { // already online
-		return nil
-	}
-
-	online_players[game_id][player_id] = &gserv.Player{
-		Email:    player.Email,
-		Nickname: player.Nickname,
-	}
+	online_players[game_id].Store(player_id, gserv.NewPlayer(player.Email, player.Nickname))
 
 	return nil
 }
 
 func GetOnlinePlayer(game_id uint, player_id uint) *gserv.Player {
-	return online_players[game_id][player_id]
+	player_any, ok := online_players[game_id].Load(player_id)
+	if ok {
+		game_player := player_any.(*gserv.Player)
+		if game_player != nil {
+			return game_player
+		}
+	}
+	return nil
 }
 
-func PlayerOffline(game_id uint, player_id uint) error {
-	delete(online_players[game_id], player_id)
-	return nil
+func PlayerOffline(game_id uint, player_id uint) {
+	online_players[game_id].Delete(player_id)
 }
 
 type banPlayer struct {
@@ -45,14 +48,15 @@ type banPlayer struct {
 func BanPlayer(player_id uint) error {
 	var ban_players []banPlayer
 	for game_id, online_player := range online_players {
-		for online_player_id, online_player_instance := range online_player {
-			if online_player_id == player_id {
-				ban_players = append(ban_players, banPlayer{
-					GameID: game_id,
-					RoomID: online_player_instance.CurrentRoomID,
-				})
-			}
+		online_player_instance_any, ok := online_player.LoadAndDelete(player_id)
+		if !ok {
+			continue
 		}
+		online_player_instance := online_player_instance_any.(*gserv.Player)
+		ban_players = append(ban_players, banPlayer{
+			GameID: game_id,
+			RoomID: online_player_instance.GetCurrentRoomID(),
+		})
 	}
 
 	for _, ban_player := range ban_players {

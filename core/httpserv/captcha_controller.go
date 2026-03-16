@@ -3,7 +3,6 @@ package httpserv
 import (
 	"gServ/core/repository"
 	"gServ/core/validate"
-	"gServ/pkg/gserv"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +28,7 @@ func post_Api_Captcha_Email(c *gin.Context) {
 		return
 	}
 
-	err = gserv.SendCaptchaEmail(req.Email, code)
+	err = captcha_template_generator.SendCaptchaEmail(req.Email, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "发送验证码失败"})
 		return

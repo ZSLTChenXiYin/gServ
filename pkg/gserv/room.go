@@ -28,20 +28,18 @@ type Room struct {
 	created_at   time.Time
 }
 
-func NewRoom(name string, game_id uint, room_id uint64, homeowner_id uint, max_player uint) *Room {
+func NewRoom(name string, game_id uint, room_id uint64, max_player uint) *Room {
 	new_room := &Room{
 		name:         name,
 		game_id:      game_id,
 		room_id:      room_id,
 		locked:       false,
-		homeowner_id: homeowner_id,
+		homeowner_id: 0,
 		max_player:   max_player,
 		player_ids:   make([]uint, max_player),
 		used_at:      time.Now(),
 		created_at:   time.Now(),
 	}
-	new_room.player_ids[0] = homeowner_id
-	new_room.player_count = 1
 	return new_room
 }
 
@@ -135,6 +133,10 @@ func (r *Room) PlayerJoin(player_id uint) error {
 		return errors.New("player already in room")
 	}
 
+	if r.homeowner_id == 0 {
+		r.homeowner_id = player_id
+	}
+
 	r.player_ids[r.player_count] = player_id
 	r.player_count++
 
@@ -217,6 +219,11 @@ func (r *Room) GetPlayerIDs() []uint {
 		}
 	}
 	return result
+}
+
+func (r *Room) RoomClose() {
+	// 死锁房间，然后将实例删除
+	r.room_lock.Lock()
 }
 
 type RoomIDGenerator struct {

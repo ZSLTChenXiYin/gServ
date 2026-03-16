@@ -39,25 +39,41 @@ func (g *CaptchaGenerator) Generate() string {
 	return string(captcha)
 }
 
-func SendCaptchaEmail(to string, captcha string) error {
+type CaptchaTemplateGenerator struct {
+	text string
+	tmpl *template.Template
+}
+
+func NewCaptchaTemplateGenerator() *CaptchaTemplateGenerator {
+	return &CaptchaTemplateGenerator{
+		tmpl: template.New("captcha"),
+	}
+}
+
+func (g *CaptchaTemplateGenerator) Open(path string) error {
 	// 读取HTML模板
-	file, err := os.Open("captcha.html")
+	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
-	tmpl, err := io.ReadAll(file)
+	text, err := io.ReadAll(file)
 	if err != nil {
 		return err
 	}
 
-	t := template.Must(template.New("email-captcha").Parse(string(tmpl)))
+	g.tmpl = template.Must(g.tmpl.Parse(string(text)))
+	g.text = string(text)
 
+	return nil
+}
+
+func (g *CaptchaTemplateGenerator) SendCaptchaEmail(to string, captcha string) error {
 	var buf bytes.Buffer
-	buf.WriteString(string(tmpl))
+	buf.WriteString(string(g.text))
 
 	buf.Reset()
 
-	err = t.Execute(&buf, map[string]string{"Captcha": captcha})
+	err := g.tmpl.Execute(&buf, map[string]string{"Captcha": captcha})
 	if err != nil {
 		return err
 	}

@@ -14,7 +14,8 @@ import (
 var (
 	router *gin.Engine
 
-	captcha_generator = gserv.NewCaptchaGenerator(gserv.CAPTCHA_LENGTH)
+	captcha_generator          = gserv.NewCaptchaGenerator(gserv.CAPTCHA_LENGTH)
+	captcha_template_generator = gserv.NewCaptchaTemplateGenerator()
 )
 
 func Init() error {
@@ -32,6 +33,11 @@ func Init() error {
 	router = gin.New()
 
 	initRouter(router)
+
+	err := captcha_template_generator.Open(config.GetConfig().Server.Email.Template)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -21,6 +21,7 @@ type ServerConfig struct {
 }
 
 type EmailConfig struct {
+	Template string `mapstructure:"template"`
 	Host     string `mapstructure:"host"`
 	Port     uint   `mapstructure:"port"`
 	Email    string `mapstructure:"email"`
