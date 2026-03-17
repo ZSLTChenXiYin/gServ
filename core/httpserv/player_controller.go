@@ -209,7 +209,7 @@ func delete_Api_Player(c *gin.Context) {
 		return
 	}
 
-	player_id := c.Param("id")
+	player_id := c.Param("player_id")
 	player_id_uint, err := strconv.ParseUint(player_id, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "玩家ID格式错误"})

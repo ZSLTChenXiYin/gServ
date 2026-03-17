@@ -3,6 +3,7 @@ package httpserv
 import (
 	"gServ/core/gameserv"
 	"gServ/core/validate"
+	"gServ/pkg/gserv"
 	"gServ/pkg/middleware"
 	"net/http"
 	"strconv"
@@ -31,7 +32,7 @@ func post_Api_Room(c *gin.Context) {
 
 	// 默认最大玩家数为8
 	if req.MaxPlayer == 0 {
-		req.MaxPlayer = 8
+		req.MaxPlayer = gserv.ROOM_MAX_PLAYER
 	}
 
 	room_id, err := gameserv.CreateRoom(req.Name, req.GameID, auth_player.ID, req.MaxPlayer)

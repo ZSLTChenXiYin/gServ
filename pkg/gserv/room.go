@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	ROOM_MAX_PLAYER = 4
+	ROOM_MAX_PLAYER = 8
 )
 
 type Room struct {

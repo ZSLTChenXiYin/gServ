@@ -108,13 +108,13 @@ func initRouter(router *gin.Engine) {
 			player_router.Use(middleware.PlayerAuth())
 			{
 				// 获取玩家信息，返回玩家ID、昵称、邮箱、当前所在房间和账号创建时间
-				player_router.GET("/:id", get_Api_Player)
+				player_router.GET("/:player_id", get_Api_Player)
 				// 更新玩家信息，目前仅需支持修改昵称和邮箱，修改邮箱需要附带发送到旧邮箱的验证码
 				player_router.PUT("/", put_Api_Player)
 				// 修改密码，需要输入旧密码和新密码还有发送到邮箱的验证码
 				player_router.PUT("/password", put_Api_Player_Password)
 				// 删除玩家
-				player_router.DELETE("/:id", delete_Api_Player)
+				player_router.DELETE("/:player_id", delete_Api_Player)
 			}
 		}
 
@@ -150,7 +150,7 @@ func initRouter(router *gin.Engine) {
 		room_router := admin_router.Group("/room")
 		{
 			// 强制删除房间
-			room_router.DELETE("/:id", delete_Admin_Room)
+			room_router.DELETE("/:game_id/:room_id", delete_Admin_Room)
 		}
 
 		ban_router := admin_router.Group("/ban")
@@ -158,9 +158,9 @@ func initRouter(router *gin.Engine) {
 			player_router := ban_router.Group("/player")
 			{
 				// 封禁玩家，直接在数据库中Delete玩家即可
-				player_router.DELETE("/:id", delete_Admin_Ban_Player)
+				player_router.DELETE("/:player_id", delete_Admin_Ban_Player)
 				// 解封玩家，将玩家在数据库中的DeletedAt字段置为空即可
-				player_router.PUT("/:id", put_Admin_Ban_Player)
+				player_router.PUT("/:player_id", put_Admin_Ban_Player)
 			}
 		}
 	}
