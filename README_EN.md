@@ -10,6 +10,7 @@ gServ is a lightweight, efficient, and secure universal game server framework de
 * [Quick Start](#quick-start)
 * [Configuration](#configuration)
 * [Deployment](#deployment)
+* [Quick Use](docs/README.md)
 
 ## Introduction ##
 #### What is gServ?
