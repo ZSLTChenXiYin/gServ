@@ -22,9 +22,6 @@ const (
 	GSERV_PROTOCOL_TYPE_ROOM_BROADCAST_DATA
 	GSERV_PROTOCOL_TYPE_ROOM_UNICAST_DATA
 	GSERV_PROTOCOL_TYPE_ROOM_MULTICAST_DATA
-	GSERV_PROTOCOL_TYPE_DATA_STORE_REQUEST
-	GSERV_PROTOCOL_TYPE_DATA_LOAD_REQUEST
-	GSERV_PROTOCOL_TYPE_DATA_DELETE_REQUEST
 )
 
 type GSERVProtocolHeader struct {
@@ -258,106 +255,6 @@ type GSERVProtocolRoomMulticastDataResponse struct {
 	Data           []byte `custproto:"DataLength"`
 }
 
-// 数据存储相关协议
-type GSERVProtocolDataStoreRequest struct {
-	GSERVProtocolToken
-	GameID     uint32
-	KeyLength  uint32
-	Key        []byte `custproto:"KeyLength"`
-	DataLength uint32
-	Data       []byte `custproto:"DataLength"`
-}
-
-const (
-	GSERV_PROTOCOL_DATA_STORE_RESPONSE_FAILURE = iota
-	GSERV_PROTOCOL_DATA_STORE_RESPONSE_SUCCESS
-)
-
-type GSERVProtocolDataStoreResponse struct {
-	GSERVProtocolHeader
-	Status uint8
-	GSERVProtocolMessage
-}
-
-func NewGSERVProtocolDataStoreResponse(status uint8, message_type uint8, message string) *GSERVProtocolDataStoreResponse {
-	return &GSERVProtocolDataStoreResponse{
-		GSERVProtocolHeader: GSERVProtocolHeader{
-			ProtocolVersion: GSERV_PROTOCOL_VERSION_FIRST,
-			ProtocolType:    GSERV_PROTOCOL_TYPE_DATA_STORE_REQUEST,
-		},
-		Status: status,
-		GSERVProtocolMessage: GSERVProtocolMessage{
-			MessageType:   message_type,
-			MessageLength: uint32(len(message)),
-			Message:       []byte(message),
-		},
-	}
-}
-
-type GSERVProtocolDataLoadRequest struct {
-	GSERVProtocolToken
-	GameID    uint32
-	KeyLength uint32
-	Key       []byte `custproto:"KeyLength"`
-}
-
-const (
-	GSERV_PROTOCOL_DATA_LOAD_RESPONSE_FAILURE = iota
-	GSERV_PROTOCOL_DATA_LOAD_RESPONSE_SUCCESS
-)
-
-type GSERVProtocolDataLoadResponse struct {
-	GSERVProtocolHeader
-	Status     uint8
-	DataLength uint32
-	Data       []byte `custproto:"DataLength"`
-}
-
-func NewGSERVProtocolDataLoadResponse(status uint8, data []byte) *GSERVProtocolDataLoadResponse {
-	return &GSERVProtocolDataLoadResponse{
-		GSERVProtocolHeader: GSERVProtocolHeader{
-			ProtocolVersion: GSERV_PROTOCOL_VERSION_FIRST,
-			ProtocolType:    GSERV_PROTOCOL_TYPE_DATA_LOAD_REQUEST,
-		},
-		Status:     status,
-		DataLength: uint32(len(data)),
-		Data:       data,
-	}
-}
-
-type GSERVProtocolDataDeleteRequest struct {
-	GSERVProtocolToken
-	GameID    uint32
-	KeyLength uint32
-	Key       []byte `custproto:"KeyLength"`
-}
-
-const (
-	GSERV_PROTOCOL_DATA_DELETE_RESPONSE_FAILURE = iota
-	GSERV_PROTOCOL_DATA_DELETE_RESPONSE_SUCCESS
-)
-
-type GSERVProtocolDataDeleteResponse struct {
-	GSERVProtocolHeader
-	Status uint8
-	GSERVProtocolMessage
-}
-
-func NewGSERVProtocolDataDeleteResponse(status uint8, message_type uint8, message string) *GSERVProtocolDataDeleteResponse {
-	return &GSERVProtocolDataDeleteResponse{
-		GSERVProtocolHeader: GSERVProtocolHeader{
-			ProtocolVersion: GSERV_PROTOCOL_VERSION_FIRST,
-			ProtocolType:    GSERV_PROTOCOL_TYPE_DATA_DELETE_REQUEST,
-		},
-		Status: status,
-		GSERVProtocolMessage: GSERVProtocolMessage{
-			MessageType:   message_type,
-			MessageLength: uint32(len(message)),
-			Message:       []byte(message),
-		},
-	}
-}
-
 func VerifyVersion(version uint8) error {
 	switch version {
 	case GSERV_PROTOCOL_VERSION_UNKNOWN:
@@ -380,10 +277,7 @@ func VerifyProtocolType(protocol_type uint8) error {
 		GSERV_PROTOCOL_TYPE_JOIN_ROOM,
 		GSERV_PROTOCOL_TYPE_ROOM_BROADCAST_DATA,
 		GSERV_PROTOCOL_TYPE_ROOM_UNICAST_DATA,
-		GSERV_PROTOCOL_TYPE_ROOM_MULTICAST_DATA,
-		GSERV_PROTOCOL_TYPE_DATA_STORE_REQUEST,
-		GSERV_PROTOCOL_TYPE_DATA_LOAD_REQUEST,
-		GSERV_PROTOCOL_TYPE_DATA_DELETE_REQUEST:
+		GSERV_PROTOCOL_TYPE_ROOM_MULTICAST_DATA:
 		return nil
 	default:
 		return errors.New("Unknown protocol type")
