@@ -125,7 +125,7 @@ func runCaptchaAutoClean(captcha_queue chan struct{}) {
 				// 清理验证码
 				err := repository.DeleteUnusedEmailCaptchas()
 				if err != nil {
-					log.StdErrorf("删除未使用的验证码失败: %v", err)
+					log.StdWarnf("删除未使用的验证码失败: %v", err)
 				}
 			}
 		}
