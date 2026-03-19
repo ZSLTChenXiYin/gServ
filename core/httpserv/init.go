@@ -142,7 +142,7 @@ func initRouter(router *gin.Engine) {
 		games_router := admin_router.Group("/games")
 		{
 			// 获取游戏列表
-			games_router.GET("/", get_Api_Games)
+			games_router.GET("/", get_Admin_Games)
 		}
 
 		game_router := admin_router.Group("/game")
