@@ -8,7 +8,7 @@ gServ（游戏服务端）是一个轻量、高效、安全的通用游戏服务
 - **项目名称**: gServ（全称：游戏服务端，英文名：gameServer）
 - **服务地址**: `http://localhost:8080`（默认HTTP端口）
 - **API前缀**: `/api`
-- **认证方式**: JWT Token（玩家接口）、AuthCode（管理接口）
+- **认证方式**: JWT Token（玩家接口）、Auth-Code（管理接口）
 
 ### 响应格式
 所有API响应均使用JSON格式，成功响应状态码为`200`，错误响应包含`error`字段。
@@ -18,9 +18,9 @@ gServ（游戏服务端）是一个轻量、高效、安全的通用游戏服务
 ```
 Authorization: Bearer <token>
 ```
-2. **管理员认证**: 使用AuthCode，通过`AuthCode`请求头传递
+2. **管理员认证**: 使用Auth-Code，通过`Auth-Code`请求头传递
 ```
-AuthCode: Bearer <auth_code>
+Auth-Code: Bearer <auth_code>
 ```
 
 ---
@@ -551,7 +551,7 @@ DELETE /api/data
 
 ## 管理员接口
 
-所有管理员接口都需要在请求头中添加`AuthCode`字段进行认证。
+所有管理员接口都需要在请求头中添加`Auth-Code`字段进行认证。
 
 ### 创建游戏
 创建新的游戏实例。
@@ -563,7 +563,7 @@ POST /admin/game
 
 **请求头**
 ```
-AuthCode: Bearer <auth_code>
+Auth-Code: Bearer <auth_code>
 ```
 
 **请求体**
@@ -595,7 +595,7 @@ DELETE /admin/game/:game_id
 
 **请求头**
 ```
-AuthCode: Bearer <auth_code>
+Auth-Code: Bearer <auth_code>
 ```
 
 ### 强制删除房间
@@ -614,7 +614,7 @@ DELETE /admin/room/:game_id/:room_id
 
 **请求头**
 ```
-AuthCode: Bearer <auth_code>
+Auth-Code: Bearer <auth_code>
 ```
 
 ### 封禁玩家
@@ -632,7 +632,7 @@ DELETE /admin/ban/player/:player_id
 
 **请求头**
 ```
-AuthCode: Bearer <auth_code>
+Auth-Code: Bearer <auth_code>
 ```
 
 ### 解封玩家
@@ -650,7 +650,7 @@ PUT /admin/ban/player/:player_id
 
 **请求头**
 ```
-AuthCode: Bearer <auth_code>
+Auth-Code: Bearer <auth_code>
 ```
 
 ---
@@ -669,7 +669,7 @@ AuthCode: Bearer <auth_code>
 ## 注意事项
 
 1. **玩家认证**: 所有需要玩家认证的接口都需要在请求头中添加`Authorization: Bearer <token>`
-2. **管理员认证**: 所有管理员接口都需要在请求头中添加`AuthCode: Bearer <auth_code>`
+2. **管理员认证**: 所有管理员接口都需要在请求头中添加`Auth-Code: Bearer <auth_code>`
 3. **数据验证**: 所有请求参数都会进行验证，不符合要求的参数会返回400错误
 4. **权限控制**: 玩家只能操作自己的数据，房主只能操作自己的房间
 5. **数据隔离**: 不同游戏的数据完全隔离，确保数据安全
