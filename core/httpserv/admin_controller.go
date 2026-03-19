@@ -5,9 +5,40 @@ import (
 	"strconv"
 
 	"gServ/core/gameserv"
+	"gServ/core/log"
+	"gServ/core/repository"
 
 	"github.com/gin-gonic/gin"
 )
+
+// 根据index和limit获取游戏列表分页
+func get_Admin_Games(c *gin.Context) {
+	req := &get_Api_Games_Request{}
+	if err := c.ShouldBindQuery(req); err != nil {
+		log.StdErrorf("HTTP服务绑定获取游戏列表请求失败: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	games, err := repository.FindGamesWithIndexAndLimit(req.Index, req.Limit)
+	if err != nil {
+		log.StdErrorf("HTTP服务获取游戏列表请求失败: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "获取游戏列表失败"})
+		return
+	}
+
+	resp := make([]get_Api_Games_Response, len(games))
+	for index, game := range games {
+		resp[index] = get_Api_Games_Response{
+			ID:        game.ID,
+			Name:      game.Name,
+			RoomCount: gameserv.GetRoomCount(game.ID),
+			CreatedAt: game.CreatedAt,
+		}
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
 
 // 对比config.GetConfig().Server.AuthCode和post_Api_Game_Request中的auth_code
 func post_Admin_Game(c *gin.Context) {

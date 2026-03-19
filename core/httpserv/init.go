@@ -139,6 +139,12 @@ func initRouter(router *gin.Engine) {
 	admin_router := router.Group("/admin")
 	admin_router.Use(middleware.CodeAuth())
 	{
+		games_router := admin_router.Group("/games")
+		{
+			// 获取游戏列表
+			games_router.GET("/", get_Api_Games)
+		}
+
 		game_router := admin_router.Group("/game")
 		{
 			// 创建游戏
