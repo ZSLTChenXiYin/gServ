@@ -11,7 +11,7 @@ import (
 
 func CodeAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authorization := c.GetHeader("AuthCode")
+		authorization := c.GetHeader("Auth-Code")
 		if authorization == "" {
 			c.JSON(401, gin.H{
 				"message": "Unauthorized",
