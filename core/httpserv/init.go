@@ -61,14 +61,14 @@ func initRouter(router *gin.Engine) {
 		games_router.Use(middleware.PlayerAuth())
 		{
 			// 获取游戏列表
-			games_router.GET("/", get_Api_Games)
+			games_router.GET("", get_Api_Games)
 		}
 
 		rooms_router := api_router.Group("/rooms")
 		rooms_router.Use(middleware.PlayerAuth())
 		{
 			// 获取房间列表，返回房间ID、房间名、房间最大人数、房间当前人数的列表和房间创建时间
-			rooms_router.GET("/", get_Api_Rooms)
+			rooms_router.GET("", get_Api_Rooms)
 		}
 
 		// 房间相关
@@ -76,7 +76,7 @@ func initRouter(router *gin.Engine) {
 		room_router.Use(middleware.PlayerAuth())
 		{
 			// 创建房间，创建后不会主动加入房间，还需要再调用一次TCP服务建立连接后加入房间
-			room_router.POST("/", post_Api_Room)
+			room_router.POST("", post_Api_Room)
 			// 获取房间信息，返回房间ID、房间名、房间最大人数、房间当前人数、房间其他玩家信息列表和房间创建时间
 			room_router.GET("/:game_id/:room_id", get_Api_Room)
 			// 放逐玩家
@@ -110,7 +110,7 @@ func initRouter(router *gin.Engine) {
 				// 获取玩家信息，返回玩家ID、昵称、邮箱、当前所在房间和账号创建时间
 				player_router.GET("/:player_id", get_Api_Player)
 				// 更新玩家信息，目前仅需支持修改昵称和邮箱，修改邮箱需要附带发送到旧邮箱的验证码
-				player_router.PUT("/", put_Api_Player)
+				player_router.PUT("", put_Api_Player)
 				// 修改密码，需要输入旧密码和新密码还有发送到邮箱的验证码
 				player_router.PUT("/password", put_Api_Player_Password)
 				// 删除玩家
@@ -125,13 +125,13 @@ func initRouter(router *gin.Engine) {
 			// 判断存档是否存在，不存在开始游戏前，可以调用创建存档接口进行初始化
 			data_router.GET("/:game_id/exists", get_Api_Data_Exists)
 			// 创建JSON数据
-			data_router.POST("/", post_Api_Data)
+			data_router.POST("", post_Api_Data)
 			// 获取JSON数据
-			data_router.GET("/", get_Api_Data)
+			data_router.GET("", get_Api_Data)
 			// 更新JSON数据
 			data_router.PUT("/:game_id", put_Api_Data)
 			// 删除JSON数据
-			data_router.DELETE("/", delete_Api_Data)
+			data_router.DELETE("", delete_Api_Data)
 		}
 	}
 
@@ -142,13 +142,13 @@ func initRouter(router *gin.Engine) {
 		games_router := admin_router.Group("/games")
 		{
 			// 获取游戏列表
-			games_router.GET("/", get_Admin_Games)
+			games_router.GET("", get_Admin_Games)
 		}
 
 		game_router := admin_router.Group("/game")
 		{
 			// 创建游戏
-			game_router.POST("/", post_Admin_Game)
+			game_router.POST("", post_Admin_Game)
 			// 删除游戏
 			game_router.DELETE("/:game_id", delete_Admin_Game)
 		}

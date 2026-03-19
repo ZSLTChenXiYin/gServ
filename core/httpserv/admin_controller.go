@@ -13,7 +13,7 @@ import (
 
 // 根据index和limit获取游戏列表分页
 func get_Admin_Games(c *gin.Context) {
-	req := &get_Api_Games_Request{}
+	req := &get_Admin_Games_Request{}
 	if err := c.ShouldBindQuery(req); err != nil {
 		log.StdErrorf("HTTP服务绑定获取游戏列表请求失败: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -42,7 +42,7 @@ func get_Admin_Games(c *gin.Context) {
 
 // 对比config.GetConfig().Server.AuthCode和post_Api_Game_Request中的auth_code
 func post_Admin_Game(c *gin.Context) {
-	req := &post_Api_Game_Request{}
+	req := &post_Admin_Game_Request{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

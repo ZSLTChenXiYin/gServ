@@ -6,13 +6,13 @@ import (
 	"gorm.io/datatypes"
 )
 
-type post_Api_Game_Request struct {
+type post_Admin_Game_Request struct {
 	Name string `json:"name"`
 }
 
 type get_Api_Games_Request struct {
-	Index int `json:"index"`
-	Limit int `json:"limit"`
+	Index int `form:"index"`
+	Limit int `form:"limit"`
 }
 
 type post_Api_Captcha_Email_Request struct {
@@ -64,4 +64,9 @@ type put_Api_Data_Request struct {
 type delete_Api_Data_Request struct {
 	GameID   uint `form:"game_id" binding:"required"`
 	PlayerID uint `form:"player_id" binding:"required"`
+}
+
+type get_Admin_Games_Request struct {
+	Index int `form:"index"`
+	Limit int `form:"limit"`
 }

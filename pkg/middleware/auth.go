@@ -11,6 +11,11 @@ import (
 
 func CodeAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if c.Request.Method == "OPTIONS" {
+			c.Next()
+			return
+		}
+
 		authorization := c.GetHeader("Auth-Code")
 		if authorization == "" {
 			c.JSON(401, gin.H{
@@ -43,6 +48,11 @@ func CodeAuth() gin.HandlerFunc {
 
 func PlayerAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if c.Request.Method == "OPTIONS" {
+			c.Next()
+			return
+		}
+
 		authorization := c.GetHeader("Authorization")
 		if authorization == "" {
 			c.JSON(401, gin.H{
